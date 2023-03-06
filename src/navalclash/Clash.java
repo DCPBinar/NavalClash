@@ -2,18 +2,18 @@ package navalclash;
 
 public class Clash {
     int[][] player_board =
-    {
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    };
+            {
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            };
 
     int[][] enemy_board =
             {
@@ -32,12 +32,17 @@ public class Clash {
 
     // Отображение доски
     public void show_boards() {
-        // TODO: переделать на ABC... и добавить отображение вражеской доски
-        System.out.println("   1 2 3 4 5 6 7 8 9 10");
+        // TODO: !возможно! сделать красивое отображение кораблей
+        System.out.println("       Ваша доска               Доска сопеника");
+        System.out.println("   A B C D E F G H I J       A B C D E F G H I J");
         for (int i = 0; i < player_board.length; i++) {
             for (int j = 0; j < player_board[i].length; j++) {
                 if (j == 0)
-                    System.out.printf("%d  ", i + 1);
+                    if (i == 9) {
+                        System.out.printf("%d ", i + 1);
+                    } else {
+                        System.out.printf("%d  ", i + 1);
+                    }
                 switch (player_board[i][j]) {
                     case 0 -> {
                         System.out.print("- ");
@@ -50,79 +55,110 @@ public class Clash {
                         System.out.print("X ");
                     }
                 }
+                if (j == 9) {
+                    System.out.print("   ");
+                    for (int g = 0; g < enemy_board[i].length; g++) {
+                        if (g == 0)
+                            if (i == 9) {
+                                System.out.printf("%d ", i + 1);
+                            } else {
+                                System.out.printf("%d  ", i + 1);
+                            }
+                        switch (enemy_board[i][g]) {
+                            case 0 -> {
+                                System.out.print("- ");
+                            }
+                            case 1 -> {
+                                System.out.print("0 ");
+                            }
+                            case 2 -> {
+                                System.out.print("X ");
+                            }
+                        }
+                    }
+                }
             }
             System.out.println();
         }
         System.out.println();
     }
 
-    // Проверка валидности расположения
-    private boolean check(int x, int y) {
-        // TODO: доделать проверку
+    // Проверка валидности индекса
+    private boolean is_validIndex(int[] arr, int index) {
+        try {
+            int i = arr[index];
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
+        return true;
+    }
+
+    // Проверка валидности границ
+    private boolean check_borders(){
+        // TODO: доделать проверку границ
         return true;
     }
 
     // Расположение кораблей
     public boolean set_ships(int n, int x, int y, String direction) {
-        // TODO: !возможно! переписать алгоритм позиционирования кораблей
         switch (direction) {
             case "left" -> {
-                try {
-                    for (int i = x - 1; i > n - (x - 1); i--) {
-                        if (player_board[y][i] == 1){
-                            return false;
-                        }
-                    }
-                    for (int i = x - 1; i > n - (x - 1); i--) {
-                        player_board[y][i] = 1;
-                    }
-                    return true;
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    return false;
-                }
-            }
-            case "right" -> {
-                try {
-                    for (int i = x - 1; i < n + (x - 1); i++) {
+                if (is_validIndex(player_board[y], x - (n - 1))) {
+                    for (int i = x; i >= x - (n - 1); i--) {
                         if (player_board[y][i] == 1) {
                             return false;
                         }
                     }
-                    for (int i = x - 1; i < n + (x - 1); i++) {
+                    for (int i = x; i >= x - (n - 1); i--) {
                         player_board[y][i] = 1;
                     }
                     return true;
-                } catch (ArrayIndexOutOfBoundsException e) {
+                } else {
+                    return false;
+                }
+            }
+            case "right" -> {
+                if (is_validIndex(player_board[y], x + (n - 1))) {
+                    for (int i = x; i <= x + (n - 1); i++) {
+                        if (player_board[y][i] == 1) {
+                            return false;
+                        }
+                    }
+                    for (int i = x; i <= x + (n - 1); i++) {
+                        player_board[y][i] = 1;
+                    }
+                    return true;
+                } else {
                     return false;
                 }
             }
             case "up" -> {
                 try {
-                    for (int i = y - 1; i > n - (y - 1); i--) {
+                    for (int i = y; i >= y - (n - 1); i--) {
                         if (player_board[i][x] == 1) {
                             return false;
                         }
                     }
-                    for (int i = y - 1; i > n - (y - 1); i--) {
+                    for (int i = y; i >= y - (n - 1); i--) {
                         player_board[i][x] = 1;
                     }
                     return true;
-                } catch (ArrayIndexOutOfBoundsException e) {
+                } catch (ArrayIndexOutOfBoundsException e){
                     return false;
                 }
             }
             case "down" -> {
                 try {
-                    for (int i = y - 1; i < n + (y - 1); i++) {
+                    for (int i = y; i <= y + (n - 1); i++) {
                         if (player_board[i][x] == 1) {
                             return false;
                         }
                     }
-                    for (int i = y - 1; i < n + (y - 1); i++) {
+                    for (int i = y; i <= y + (n - 1); i++) {
                         player_board[i][x] = 1;
                     }
                     return true;
-                } catch (ArrayIndexOutOfBoundsException e) {
+                } catch (ArrayIndexOutOfBoundsException e){
                     return false;
                 }
             }
@@ -138,8 +174,8 @@ public class Clash {
             for (int j = 0; j < ships[i]; j++) {
                 boolean success = false;
                 while (!success) {
-                    int x = (int) (Math.random() * 11);
-                    int y = (int) (Math.random() * 11);
+                    int x = (int) (Math.random() * 10);
+                    int y = (int) (Math.random() * 10);
                     String direction = s[(int) (Math.random() * 4)];
                     /* Логи
                     System.out.println(i);
@@ -151,13 +187,29 @@ public class Clash {
                 }
             }
         }
-        System.out.println("Finish");
     }
 
     // Ход
-    public boolean move(Clash clash) {
-        // TODO: сделать механику хода и отображение хода на всех досках
-        return true;
+    public boolean move(Clash player, Clash enemy, int x, int y) {
+        switch (enemy.player_board[x - 1][y - 1]) {
+            case 0 -> {
+                System.out.println("Вы промахнулись!");
+                player.enemy_board[x - 1][y - 1] = 1;
+                enemy.player_board[x - 1][y - 1] = 2;
+                return false;
+            }
+            case 1 -> {
+                System.out.println("Вы попали!");
+                player.enemy_board[x - 1][y - 1] = 2;
+                enemy.player_board[x - 1][y - 1] = 2;
+                return true;
+            }
+            case 2 -> {
+                System.out.println("Вы уже стреляли сюда, попробуйте еще раз");
+                return move(player, enemy, x, y);
+            }
+        }
+        return false;
     }
 
     // Проверка на конец игры
