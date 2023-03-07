@@ -32,7 +32,6 @@ public class Clash {
 
     // Отображение доски
     public void show_boards() {
-        // TODO: !возможно! сделать красивое отображение кораблей
         System.out.println("       Ваша доска               Доска сопеника");
         System.out.println("   A B C D E F G H I J       A B C D E F G H I J");
         for (int i = 0; i < player_board.length; i++) {
@@ -48,8 +47,7 @@ public class Clash {
                         System.out.print("- ");
                     }
                     case 1 -> {
-                        System.out.print("0 ");
-
+                        System.out.print("■ ");
                     }
                     case 2 -> {
                         System.out.print("X ");
@@ -84,7 +82,7 @@ public class Clash {
     }
 
     // Проверка валидности индекса
-    private boolean is_validIndex(int[] arr, int index) {
+    private boolean is_valid_index(int[] arr, int index) {
         try {
             int i = arr[index];
         } catch (IndexOutOfBoundsException e) {
@@ -94,73 +92,229 @@ public class Clash {
     }
 
     // Проверка валидности границ
-    private boolean check_borders(){
-        // TODO: доделать проверку границ
-        return true;
+    private boolean check_borders(int n, int x, int y, String direction) {
+        if (n == 1) {
+            try {
+                if (player_board[y - 1][x] == 1){
+                    return true;
+                }
+            } catch (ArrayIndexOutOfBoundsException ignore) {
+            }
+            try {
+                if (player_board[y + 1][x] == 1){
+                    return true;
+                }
+            } catch (ArrayIndexOutOfBoundsException ignore) {
+            }
+            try {
+                if (player_board[y][x + 1] == 1){
+                    return true;
+                }
+            } catch (ArrayIndexOutOfBoundsException ignore) {
+            }
+            try {
+                if (player_board[y][x - 1] == 1){
+                    return true;
+                }
+            } catch (ArrayIndexOutOfBoundsException ignore) {
+            }
+            return false;
+        }
+        switch (direction) {
+            case "left" -> {
+                if (!is_valid_index(player_board[y], x - n - 1)) {
+                    return true;
+                }
+                for (int i = x; i >= x - (n - 1); i--) {
+                    if (player_board[y][i] == 1) {
+                        return true;
+                    }
+                    try {
+                        if (player_board[y + 1][i] == 1) {
+                            return true;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                    try {
+                        if (player_board[y - 1][i] == 1) {
+                            return true;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                    try {
+                        if (i == x) {
+                            if (player_board[y][x + 1] == 1) {
+                                return true;
+                            }
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                    try {
+                        if (i == x - (n - 1)) {
+                            if (player_board[y][x - 1] == 1) {
+                                return true;
+                            }
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                }
+            }
+            case "right" -> {
+                if (!is_valid_index(player_board[y], x + (n - 1))) {
+                    return true;
+                }
+                for (int i = x; i <= x + (n - 1); i++) {
+                    if (player_board[y][i] == 1) {
+                        return true;
+                    }
+                    try {
+                        if (player_board[y + 1][i] == 1) {
+                            return true;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                    try {
+                        if (player_board[y - 1][i] == 1) {
+                            return true;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                    try {
+                        if (i == x) {
+                            if (player_board[y][x - 1] == 1) {
+                                return true;
+                            }
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                    try {
+                        if (i == x + (n - 1)) {
+                            if (player_board[y][x + 1] == 1) {
+                                return true;
+                            }
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                }
+            }
+            case "up" -> {
+                try {
+                    if (player_board[y - (n - 1)][x] == 1) {
+                        return true;
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    return true;
+                }
+                for (int i = y; i >= y - (n - 1); i--) {
+                    if (player_board[i][x] == 1) {
+                        return true;
+                    }
+                    try {
+                       if (player_board[i][x - 1] == 1) {
+                           return true;
+                       }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                    try {
+                        if (player_board[i][x + 1] == 1) {
+                            return true;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                    try {
+                        if (i == y) {
+                            if (player_board[i + 1][x] == 1) {
+                                return true;
+                            }
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                    try {
+                        if (i == y - (n - 1)) {
+                            if (player_board[i - 1][x] == 1) {
+                                return true;
+                            }
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                }
+            }
+            case "down" -> {
+                try {
+                    if (player_board[y + (n - 1)][x] == 1) {
+                        return true;
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    return true;
+                }
+                for (int i = y; i <= y + (n - 1); i++) {
+                    if (player_board[i][x] == 1) {
+                        return true;
+                    }
+                    try {
+                        if (player_board[i][x - 1] == 1) {
+                            return true;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                    try {
+                        if (player_board[i][x + 1] == 1) {
+                            return true;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                    try {
+                        if (i == y) {
+                            if (player_board[i - 1][x] == 1) {
+                                return true;
+                            }
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                    try {
+                        if (i == y + (n - 1)) {
+                            if (player_board[i + 1][x] == 1) {
+                                return true;
+                            }
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ignore) {
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     // Расположение кораблей
     public boolean set_ships(int n, int x, int y, String direction) {
         switch (direction) {
             case "left" -> {
-                if (is_validIndex(player_board[y], x - (n - 1))) {
-                    for (int i = x; i >= x - (n - 1); i--) {
-                        if (player_board[y][i] == 1) {
-                            return false;
-                        }
-                    }
-                    for (int i = x; i >= x - (n - 1); i--) {
-                        player_board[y][i] = 1;
-                    }
-                    return true;
-                } else {
-                    return false;
+                if (check_borders(n, x, y, direction)) return false;
+                for (int i = x; i >= x - (n - 1); i--) {
+                    player_board[y][i] = 1;
                 }
+                return true;
             }
             case "right" -> {
-                if (is_validIndex(player_board[y], x + (n - 1))) {
-                    for (int i = x; i <= x + (n - 1); i++) {
-                        if (player_board[y][i] == 1) {
-                            return false;
-                        }
-                    }
-                    for (int i = x; i <= x + (n - 1); i++) {
-                        player_board[y][i] = 1;
-                    }
-                    return true;
-                } else {
-                    return false;
+                if (check_borders(n, x, y, direction)) return false;
+                for (int i = x; i <= x + (n - 1); i++) {
+                    player_board[y][i] = 1;
                 }
+                return true;
             }
             case "up" -> {
-                try {
-                    for (int i = y; i >= y - (n - 1); i--) {
-                        if (player_board[i][x] == 1) {
-                            return false;
-                        }
-                    }
-                    for (int i = y; i >= y - (n - 1); i--) {
-                        player_board[i][x] = 1;
-                    }
-                    return true;
-                } catch (ArrayIndexOutOfBoundsException e){
-                    return false;
+                if (check_borders(n, x, y, direction)) return false;
+                for (int i = y; i >= y - (n - 1); i--) {
+                    player_board[i][x] = 1;
                 }
+                return true;
             }
             case "down" -> {
-                try {
-                    for (int i = y; i <= y + (n - 1); i++) {
-                        if (player_board[i][x] == 1) {
-                            return false;
-                        }
-                    }
-                    for (int i = y; i <= y + (n - 1); i++) {
-                        player_board[i][x] = 1;
-                    }
-                    return true;
-                } catch (ArrayIndexOutOfBoundsException e){
-                    return false;
+                if (check_borders(n, x, y, direction)) return false;
+                for (int i = y; i <= y + (n - 1); i++) {
+                    player_board[i][x] = 1;
                 }
+                return true;
             }
         }
         return false;
@@ -185,6 +339,7 @@ public class Clash {
                     */
                     success = set_ships(i + 1, x, y, direction);
                 }
+                show_boards();
             }
         }
     }
